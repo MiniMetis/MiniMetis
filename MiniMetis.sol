@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at BscScan.com on 2021-11-20
-*/
-
 // Dependency file: @openzeppelin/contracts/utils/math/SafeMath.sol
 
 // SPDX-License-Identifier: MIT
