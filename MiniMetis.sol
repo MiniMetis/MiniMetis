@@ -1,3 +1,7 @@
+/**
+ *Submitted for verification at BscScan.com on 2021-11-20
+*/
+
 // Dependency file: @openzeppelin/contracts/utils/math/SafeMath.sol
 
 // SPDX-License-Identifier: MIT
@@ -743,7 +747,7 @@ contract DividendDistributor is IDividendDistributor {
         dividendsPerShareAccuracyFactor = 10**36;
         minPeriod = 1 hours;
         minDistribution = 1 * (10**rewardToken.decimals());
-    }
+    } 
 
     function setDistributionCriteria(
         uint256 _minPeriod,
@@ -776,20 +780,8 @@ contract DividendDistributor is IDividendDistributor {
     }
 
     function deposit() external payable override onlyToken {
-        uint256 balanceBefore = rewardToken.balanceOf(address(this));
-
-        address[] memory path = new address[](2);
-        path[0] = router.WETH();
-        path[1] = address(rewardToken);
-
-        router.swapExactETHForTokensSupportingFeeOnTransferTokens{
-            value: msg.value
-        }(0, path, address(this), block.timestamp);
-
-        uint256 amount = rewardToken.balanceOf(address(this)).sub(
-            balanceBefore
-        );
-
+        
+        uint256 amount = msg.value;
         totalDividends = totalDividends.add(amount);
         dividendsPerShare = dividendsPerShare.add(
             dividendsPerShareAccuracyFactor.mul(amount).div(totalShares)
@@ -842,7 +834,7 @@ contract DividendDistributor is IDividendDistributor {
         uint256 amount = getUnpaidEarnings(shareholder);
         if (amount > 0) {
             totalDistributed = totalDistributed.add(amount);
-            rewardToken.transfer(shareholder, amount);
+            payable(shareholder).transfer(amount);
             shareholderClaims[shareholder] = block.timestamp;
             shares[shareholder].totalRealised = shares[shareholder]
                 .totalRealised
@@ -942,7 +934,7 @@ pragma solidity =0.8.4;
 // import "contracts/buyback/DividendDistributor.sol";
 // import "contracts/BaseToken.sol";
 
-contract BuybackBabyToken is IERC20Extended, Auth, BaseToken {
+contract MiniMetisToken is IERC20Extended, Auth, BaseToken {
     using SafeMath for uint256;
 
     uint256 public constant VERSION = 1;
@@ -962,11 +954,11 @@ contract BuybackBabyToken is IERC20Extended, Auth, BaseToken {
     address public marketingFeeReceiver;
     address public treasuryFeeReceiver;
 
-    uint256 public liquidityFee; // default: 200
-    uint256 public buybackFee; // default: 300
-    uint256 public reflectionFee; // default: 800
-    uint256 public marketingFee; // default: 100
-    uint256 public treasuryFee; 
+    uint256 public liquidityFee; // default: 300
+    uint256 public buybackFee; // default: 200
+    uint256 public reflectionFee; // default: 500
+    uint256 public marketingFee; // default: 300
+    uint256 public treasuryFee; // default: 200
     uint256 public totalFee;
     uint256 public feeDenominator; // default: 10000
 
